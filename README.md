@@ -6,8 +6,9 @@ Minnen, David, Johannes Ballé, and George D. Toderici.
 ["Joint autoregressive and hierarchical priors for learned image compression."](http://papers.nips.cc/paper/8275-joint-autoregressive-and-hierarchical-priors-for-learned-image-compression.pdf
 ) Advances in Neural Information Processing Systems. 2018.
 
+![Model structure](https://github.com/thekoshkina/learned_image_compression/blob/master/images/model_structure.png)
 
-###Required packages: 
+### Required packages: 
 ```
 torch~=1.3.1
 torchvision~=0.4.2
@@ -16,7 +17,7 @@ Pillow~=5.1.0
 scipy~=1.4.0
 ```
 
-##Implemented model summary
+## Implemented model summary
 ```
 ----------------------------------------------------------------
         Layer (type)               Output Shape         Param #
@@ -55,21 +56,22 @@ EntropyParameters-22          [-1, 384, 45, 45]               0
 Total params: 13,896,419
 Trainable params: 13,896,419
 ```
-##Preliminary results
+## Preliminary results
 Training of the model with a simplified hyperlatent rate show the potential for the model to train: 
+![](https://github.com/thekoshkina/learned_image_compression/blob/master/images/epoch0batch0.png )||![](https://github.com/thekoshkina/learned_image_compression/blob/master/images/epoch1batch0.png) ||![](https://github.com/thekoshkina/learned_image_compression/blob/master/images/epoch2batch0.png)
 
-##Future work 
+## Future work 
 - add padding so the model can work with imaging of any resolution
 - optimise updates of dynamic Lagrange multipliers vs constants
 - add Compress function encodes an image into a bitstream
 - add Decompress function that reconstructs 
  
-##References: 
+### References: 
  Minnen, David, Johannes Ballé, and George D. Toderici. 
 ["Joint autoregressive and hierarchical priors for learned image compression."](http://papers.nips.cc/paper/8275-joint-autoregressive-and-hierarchical-priors-for-learned-image-compression.pdf
 ) Advances in Neural Information Processing Systems. 2018.
  
- Ballé, D. Minnen, S. Singh, S. J. Hwang, and N. Johnston,
+ Ballé, D. Minnen, S. Singh, S. J. Hwang, and N. Johnston,
 [“Variational image compression with a scale hyperprior,”](https://openreview.net/forum?id=rkcQFMZRb) 6th Int. Conf. on Learning Representations, 2018. 
 		
  Implementation of Masked convolution was taken from: https://www.codeproject.com/Articles/5061271/PixelCNN-in-Autoregressive-Models
