@@ -58,7 +58,13 @@ Trainable params: 13,896,419
 ```
 ## Preliminary results
 Training of the model with a simplified hyperlatent rate show the potential for the model to train: 
-![](https://github.com/thekoshkina/learned_image_compression/blob/master/images/epoch0batch0.png )||![](https://github.com/thekoshkina/learned_image_compression/blob/master/images/epoch1batch0.png) ||![](https://github.com/thekoshkina/learned_image_compression/blob/master/images/epoch2batch0.png)
+
+Example of original/reconstructed image at epoch 0
+![Example of original/reconstructed image at epoch 0](https://github.com/thekoshkina/learned_image_compression/blob/master/images/epoch0batch0.png )
+Example of original/reconstructed image at epoch 1 
+![xample of original/reconstructed image at epoch 1](https://github.com/thekoshkina/learned_image_compression/blob/master/images/epoch1batch0.png) 
+Example of original/reconstructed image at epoch 2 
+![xample of original/reconstructed image at epoch 2](https://github.com/thekoshkina/learned_image_compression/blob/master/images/epoch2batch0.png)
 
 ## Future work 
 - add padding so the model can work with imaging of any resolution
