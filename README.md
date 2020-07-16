@@ -81,4 +81,5 @@ Example of original/reconstructed image at epoch 2
 [“Variational image compression with a scale hyperprior,”](https://openreview.net/forum?id=rkcQFMZRb) 6th Int. Conf. on Learning Representations, 2018. 
 		
  Implementation of Masked convolution was taken from: https://www.codeproject.com/Articles/5061271/PixelCNN-in-Autoregressive-Models
+ 
  Implementation of the GDN non-linearity was from https://github.com/jorge-pessoa/pytorch-gdn/blob/master/pytorch_gdn/__init__.py
