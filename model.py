@@ -122,11 +122,11 @@ class Model(nn.Module):
 		
 	def quantize(self, x):
 		"""
-		Quantize function - restores the value from previous rescaling (multiply by 255), quintises it to the nearest integer and scales it between 0 and 1 (devide by 255)
+		Quantize function: round it to the nearest integer
 		:param x: Tensor
 		:return: Tensor
 		"""
-		return (x * 255).round() / 255.0
+		return x.round()
 
 	def forward(self, x):
 		y = self.encoder(x)
