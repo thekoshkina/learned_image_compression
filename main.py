@@ -24,8 +24,8 @@ def train_epoch(model, criterion, optimiser, train_dataloader, epoch, epochs, la
 		inputs = inputs.to(args.device)
 		
 		# forward
-		x_hat, sigma, mu, y_hat, z_hat = model(inputs)
-		loss, lam = criterion(inputs, x_hat, sigma, mu, y_hat, z_hat, lam)
+		x_hat, loss = model(inputs)
+		# loss, lam = criterion(inputs, x_hat, sigma, mu, y_hat, z_hat, lam)
 		optimiser.zero_grad()
 		# backward
 		loss.backward()
