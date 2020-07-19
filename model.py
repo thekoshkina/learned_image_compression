@@ -17,17 +17,19 @@ class Encoder(nn.Module):
 		super(Encoder, self).__init__()
 		
 		self.first_conv = nn.Conv2d(in_channels=dim_in, out_channels=192, kernel_size=5, stride=2)
-		self.conv = nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, stride=2)
+		self.conv1 = nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, stride=2)
+		self.conv2 = nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, stride=2)
+		self.conv3 = nn.Conv2d(in_channels=192, out_channels=192, kernel_size=5, stride=2)
 		self.gdn = GDN(192, inverse=False, device=device, beta_min=1e-6, gamma_init=.1, reparam_offset=2 ** -18)
 	
 	def forward(self, x):
 		x = self.first_conv(x)
 		x = self.gdn(x)
-		x = self.conv(x)
+		x = self.conv1(x)
 		x = self.gdn(x)
-		x = self.conv(x)
+		x = self.conv2(x)
 		x = self.gdn(x)
-		x = self.conv(x)
+		x = self.conv3(x)
 		return x
 
 
@@ -35,16 +37,18 @@ class Decoder(nn.Module):
 	def __init__(self, dim_in, device):
 		super(Decoder, self).__init__()
 		
-		self.deconv = nn.ConvTranspose2d(in_channels=dim_in, out_channels=192, kernel_size=5, stride=2)
+		self.deconv1 = nn.ConvTranspose2d(in_channels=dim_in, out_channels=192, kernel_size=5, stride=2)
+		self.deconv2 = nn.ConvTranspose2d(in_channels=192, out_channels=192, kernel_size=5, stride=2)
+		self.deconv3 = nn.ConvTranspose2d(in_channels=192, out_channels=192, kernel_size=5, stride=2)
 		self.last_deconv = nn.ConvTranspose2d(in_channels=192, out_channels=3, kernel_size=5, stride=2)
 		self.igdn = GDN(192, inverse=True, device=device, beta_min=1e-6, gamma_init=.1, reparam_offset=2 ** -18)
 	
 	def forward(self, x):
-		x = self.deconv(x)
+		x = self.deconv1(x)
 		x = self.igdn(x)
-		x = self.deconv(x)
+		x = self.deconv2(x)
 		x = self.igdn(x)
-		x = self.deconv(x)
+		x = self.deconv3(x)
 		x = self.igdn(x)
 		x = self.last_deconv(x)
 		return x
@@ -112,9 +116,10 @@ class EntropyParameters(nn.Module):
 
 class Model(nn.Module):
 	def __init__(self, device):
+		self.device = device
 		super(Model, self).__init__()
-		self.encoder = Encoder(3, device)
-		self.decoder = Decoder(192, device)
+		self.encoder = Encoder(3, self.device)
+		self.decoder = Decoder(192, self.device)
 		self.hyper_encoder = HyperEncoder(192)
 		self.hyper_decoder = HyperDecoder(192)
 		self.entropy = EntropyParameters(768)
@@ -122,11 +127,13 @@ class Model(nn.Module):
 		
 	def quantize(self, x):
 		"""
-		Quantize function: round it to the nearest integer
+		Quantize function:  The use of round function during training will cause the gradient to be 0 and will stop encoder from training.
+		Therefore to immitate quantisation we add a uniform noise between -1/2 and 1/2
 		:param x: Tensor
 		:return: Tensor
 		"""
-		return x.round()
+		uniform = -1 * torch.rand(x.shape) + 1/2
+		return x + uniform.to(self.device)
 
 	def forward(self, x):
 		y = self.encoder(x)
@@ -138,5 +145,9 @@ class Model(nn.Module):
 		phi_psi = torch.cat([phi, psi], dim=1)
 		sigma_mu = self.entropy(phi_psi)
 		sigma, mu = torch.split(sigma_mu, y_hat.shape[1], dim=1)
+
+		# clip sigma so it's larger than 0 - to make sure it satisfies statistical requirement of sigma >0 and not too close to 0 so it doesn't cause computational issues
+		sigma = torch.clamp(sigma, min = 1e-6)
+
 		x_hat = self.decoder(y_hat)
 		return x_hat, sigma, mu, y_hat, z_hat

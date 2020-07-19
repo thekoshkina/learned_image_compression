@@ -12,7 +12,7 @@ import torch.nn as nn
 
 
 class RateDistortionLoss(nn.Module):
-	def __init__(self, type="normal", constant_lambda=True):
+	def __init__(self, type="sigmoid", constant_lambda=True):
 		"""
 		Initialise Rate-Distortion Loss function
 		constant_lambda:: whether to keep lambda as constant or dynamically optimise it
@@ -38,8 +38,8 @@ class RateDistortionLoss(nn.Module):
 		"""
 		half = 0.5
 		const = (2 ** -0.5)
-		return half * (1 + torch.erf((torch.tanh(x) - mu) / (const * sigma)))
-	
+		return half * (1 + torch.erf((x - mu) / (const * sigma)))
+
 	def simple_cumulative(self, x):
 		"""
 		Calculates CDF of Normal distribution with mu = 0 and sigma = 1
@@ -47,7 +47,7 @@ class RateDistortionLoss(nn.Module):
 		half = 0.5
 		const = -(2 ** -0.5)
 		return half * torch.erf(const * x)
-	
+
 	def sigmoid_cumulative(self, x):
 		"""
 		Calculates sigmoid of the tensor to use as a replacement of CDF

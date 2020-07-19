@@ -48,7 +48,7 @@ def train_epoch(model, criterion, optimiser, train_dataloader, epoch, epochs, la
 def train(args):
 	
 	# load dataset
-	train_data = torchvision.datasets.SBU("/home/vira/code/compression2/data_full", transform=torchvision.transforms.Compose([torchvision.transforms.Resize((765, 765)), torchvision.transforms.ToTensor()]), target_transform=None, download=True)
+	train_data = torchvision.datasets.SBU(args.root, transform=torchvision.transforms.Compose([torchvision.transforms.Resize((765, 765)), torchvision.transforms.ToTensor()]), target_transform=None, download=True)
 	
 	# create data loader
 	train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=args.batch_size, shuffle=True)
@@ -90,7 +90,7 @@ if __name__ == "__main__":
 	parser.add_argument('-batch_size', type=int, default=4, help='number of epoch for training')
 	parser.add_argument('-continue_training', type=bool, default=False, help='whether to use pretrained model from the checkpoint file')
 	parser.add_argument('-checkpoint', type=str, default='compression_model.pth', help='path where to save checkpoint during training')
-	parser.add_argument('-root', type=str, default='data/', help='path to the folder with grayscale images')
+	parser.add_argument('-root', type=str, default='data/', help='path to the folder with images')
 	parser.add_argument('-lr', type=float, default=1e-4, help='path to the folder with grayscale images')
 	
 	args = parser.parse_args()
