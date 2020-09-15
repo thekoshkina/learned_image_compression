@@ -37,7 +37,7 @@ class RateDistortionLoss(nn.Module):
 		Calculates CDF of Normal distribution with parameters mu and sigma at point x
 		"""
 		half = 0.5
-		const = (2 ** -0.5)
+		const = (2 ** 0.5)
 		return half * (1 + torch.erf((x - mu) / (const * sigma)))
 
 	def simple_cumulative(self, x):
